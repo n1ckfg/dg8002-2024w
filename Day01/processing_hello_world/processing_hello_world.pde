@@ -1,4 +1,4 @@
-float bob = 100;
+float posX = 100;
 float speed = 2;
 
 void setup() {
@@ -10,11 +10,11 @@ void draw() {
   
   stroke(255, 0, 0);
   fill(0, 255, 0);
-  ellipse(bob, 200, 10, 10);
+  ellipse(posX, 200, 10, 10);
   
-  bob += speed;
+  posX += speed;
   
-  if (bob < 0 || bob > width) {
+  if (posX < 0 || posX > width) {
     speed *= -1;
   }
 }
