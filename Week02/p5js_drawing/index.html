@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      html, body {
+        overscroll-behavior: none;
+        touch-action: none;
+      }    
+    </style>
+    <script src="https://github.com/processing/p5.js/releases/download/v1.9.0/p5.min.js"></script>
+    <script>  
+      let clearScreen = false;
+      let bgColor, fgColor;
+      let alphaVal = 103;
+      
+      function setup() {
+        createCanvas(400, 400);
+        bgColor = color(127);
+        background(bgColor);
+        randomColor();
+      }
+      
+      function draw() {  
+        if (clearScreen == true) {
+          background(bgColor);
+          clearScreen = false;
+        } else {
+          if (mouseIsPressed == true) {
+            let distVal = dist(mouseX, mouseY, pmouseX, pmouseY);
+            console.log(distVal);
+            let mapVal = map(distVal, 0, 40, 5, 15);
+            
+            strokeWeight(mapVal + 3);
+            stroke(0, alphaVal);
+            line(mouseX, mouseY, pmouseX, pmouseY);
+            strokeWeight(mapVal);
+            stroke(fgColor);
+            line(mouseX, mouseY, pmouseX, pmouseY);
+          }
+        }
+      }
+      
+      function keyReleased() {
+        if (key == ' ') {
+          clearScreen = true;
+        }
+        
+        if (key == 'c') {
+          randomColor();
+        }
+      }
+      
+      function randomColor() {
+        fgColor = color(random(127, 255), random(127, 255), random(127, 255), alphaVal);
+      }
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
