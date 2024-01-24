@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      html, body {
+        overscroll-behavior: none;
+        touch-action: none;
+      }    
+    </style>
+    <script src="https://github.com/processing/p5.js/releases/download/v1.9.0/p5.min.js"></script>
+    <script>  
+      let bgColor, fgColor;
+      let alphaVal = 103;
+      let isDrawing = false;
+      let strokes = [];
+      let falling = false;
+      let armDelete = false;
+
+      function setup() {
+        createCanvas(400, 400);
+        bgColor = color(127);
+        randomColor();
+      }
+      
+      function draw() {          
+        background(bgColor);
+
+        if (armDelete) {
+          strokes = []; 
+          armDelete = false;
+        }
+
+        if (mouseIsPressed && isDrawing && strokes.length > 0) {
+          let distVal = dist(mouseX, mouseY, pmouseX, pmouseY);
+          //console.log(distVal);
+          let mapVal = map(distVal, 0, 40, 5, 15);
+          strokes[strokes.length-1].points.push(createVector(mouseX, mouseY, mapVal));
+        }
+
+        for (let i=0; i<strokes.length; i++) {
+          strokes[i].draw();
+        }
+      }
+      
+      function mousePressed() {
+        if (!isDrawing) {
+          strokes.push(new Stroke(fgColor));
+          isDrawing = true;
+        }
+      }
+
+      function mouseReleased() {
+        isDrawing = false;
+      }
+
+      function keyReleased() {
+        switch(key) {
+          case ' ':
+            armDelete = true;
+            break;
+          case 'c':
+            randomColor();
+            break;   
+          case 'f':
+            falling = !falling;             
+        }
+      }
+      
+      function randomColor() {
+        fgColor = color(random(127, 255), random(127, 255), random(127, 255), alphaVal);
+      }
+
+      class Stroke {
+
+          constructor(col) {
+            this.color = col;
+            this.points = [];
+          }
+
+          draw() {
+            for (let i=1; i<this.points.length; i++) {
+              strokeWeight(this.points[i].z + 3);
+              stroke(0, alphaVal);
+              line(this.points[i].x, this.points[i].y, this.points[i-1].x, this.points[i-1].y);
+              
+              strokeWeight(this.points[i].z);
+              stroke(this.color);
+              line(this.points[i].x, this.points[i].y, this.points[i-1].x, this.points[i-1].y);              
+              
+              if (falling) {
+                let fallSpeed = random(0.0, this.points[i].z * 0.2)
+                this.points[i-1].y += fallSpeed;
+                this.points[i].y += fallSpeed;
+              }
+            }
+          }
+
+      }
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
