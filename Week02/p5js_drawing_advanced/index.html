@@ -9,17 +9,15 @@
     </style>
     <script src="https://github.com/processing/p5.js/releases/download/v1.9.0/p5.min.js"></script>
     <script>  
-      let bgColor, fgColor;
+      let bgColor;
       let alphaVal = 103;
       let isDrawing = false;
       let strokes = [];
-      let falling = false;
       let armDelete = false;
 
       function setup() {
         createCanvas(400, 400);
         bgColor = color(127);
-        randomColor();
       }
       
       function draw() {          
@@ -27,6 +25,7 @@
 
         if (armDelete) {
           strokes = []; 
+          console.log("all strokes deleted, total: " + strokes.length);
           armDelete = false;
         }
 
@@ -38,13 +37,19 @@
         }
 
         for (let i=0; i<strokes.length; i++) {
-          strokes[i].draw();
+          if (strokes[i].alive) {
+            strokes[i].draw();
+          } else {
+            strokes.splice(i, 1);
+            console.log("stroke deleted, total: " + strokes.length);
+          }
         }
       }
       
       function mousePressed() {
         if (!isDrawing) {
-          strokes.push(new Stroke(fgColor));
+          strokes.push(new Stroke());
+          console.log("stroke added, total: " + strokes.length);
           isDrawing = true;
         }
       }
@@ -57,40 +62,45 @@
         switch(key) {
           case ' ':
             armDelete = true;
-            break;
-          case 'c':
-            randomColor();
-            break;   
-          case 'f':
-            falling = !falling;             
+            break;            
         }
       }
       
       function randomColor() {
-        fgColor = color(random(127, 255), random(127, 255), random(127, 255), alphaVal);
+        return color(random(127, 255), random(127, 255), random(127, 255), alphaVal);
       }
 
       class Stroke {
 
-          constructor(col) {
-            this.color = col;
+          constructor() {
+            this.color = randomColor();
             this.points = [];
+            this.alive = true;
+            this.falling = false;
+            this.timestamp = millis();
+            this.falltime = random(500, 1000);
+            this.lifetime = 20000;
           }
 
           draw() {
-            for (let i=1; i<this.points.length; i++) {
-              strokeWeight(this.points[i].z + 3);
-              stroke(0, alphaVal);
-              line(this.points[i].x, this.points[i].y, this.points[i-1].x, this.points[i-1].y);
-              
-              strokeWeight(this.points[i].z);
-              stroke(this.color);
-              line(this.points[i].x, this.points[i].y, this.points[i-1].x, this.points[i-1].y);              
-              
-              if (falling) {
-                let fallSpeed = random(0.0, this.points[i].z * 0.2)
-                this.points[i-1].y += fallSpeed;
-                this.points[i].y += fallSpeed;
+            if (millis() > this.timestamp + this.falltime) this.falling = true;
+            if (millis() > this.timestamp + this.lifetime) this.alive = false;
+
+            if (this.alive) {
+              for (let i=1; i<this.points.length; i++) {
+                strokeWeight(this.points[i].z + 3);
+                stroke(0, alphaVal);
+                line(this.points[i].x, this.points[i].y, this.points[i-1].x, this.points[i-1].y);
+                
+                strokeWeight(this.points[i].z);
+                stroke(this.color);
+                line(this.points[i].x, this.points[i].y, this.points[i-1].x, this.points[i-1].y);              
+                
+                if (this.falling) {
+                  let fallSpeed = random(0.0, this.points[i].z * 0.2)
+                  this.points[i-1].y += fallSpeed;
+                  this.points[i].y += fallSpeed;
+                }
               }
             }
           }
