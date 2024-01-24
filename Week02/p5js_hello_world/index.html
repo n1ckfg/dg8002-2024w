@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	
+	<head>
+		<script src="../../common/js/p5js/p5.min.js"></script>
+		<script>
+			let x = 200;
+			let y = 200;
+			let speedX = 5;
+			let speedY = 5;
+			let randVal = 5;
+
+			function setup() {
+			  createCanvas(400, 400);
+			  background(220, 0, 110);
+			}
+
+			function draw() {
+			  ellipse(x, y, 20, 20);
+
+			  x += speedX;
+			  y += speedY;
+			  
+			  if (x < 0 || x > width) {
+			    speedX *= -1;
+			  }
+			  if (y < 0 || y > height) {
+			    speedY *= -1;
+			  }
+			  
+			  x += random(-randVal, randVal);
+			  y += random(-randVal, randVal);
+			  
+
+			  console.log("speed: " + speedX + ", " + speedY + ", " + "random: " + randVal);
+			}			
+		</script>
+	</head>
+
+	<body>
+	</body>
+
+</html>
