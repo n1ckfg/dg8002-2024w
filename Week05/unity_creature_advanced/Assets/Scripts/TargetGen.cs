@@ -8,11 +8,16 @@ public class TargetGen : MonoBehaviour
     public Target prefab;
     public int numTargets = 10;
 
-    // Start is called before the first frame update
-    void Start()
+    [HideInInspector] public List<Target> targets;
+
+    void Awake()
     {
+        targets = new List<Target>();
+
         for (int i=0; i<numTargets; i++) {
-            Instantiate(prefab, transform.position, transform.rotation);
+            Target target = Instantiate(prefab, transform.position, transform.rotation);
+            target.transform.parent = transform;
+            targets.Add(target);
         }
      }
 
