@@ -13,16 +13,16 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     ofBackground(0);
+
+    int step = 10;
     
-    int step = int(ofRandom(8, 10));
-
-    for (int i=0; i<1000; i += step) {
-        for (int j=0; j<1000; j += step) {
+    for (int i=0; i<ofGetWidth(); i += step) {
+        for (int j=0; j<ofGetHeight(); j += step) {
             ofSetColor(0, 127, 0, 20);
-            ofDrawCircle(i, j, 10, 10);
+            ofDrawCircle(i, j, step*2, step*2);
 
-            ofSetColor(127, 0, 0, 255);
-            ofDrawCircle(i, j, 4, 4);
+            ofSetColor(227, 100, 0, 127);
+            ofDrawCircle(i, j, step, step);
         }
     }
 }
