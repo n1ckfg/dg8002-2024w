@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      html, body {
+        overscroll-behavior: none;
+        touch-action: none;
+        margin: 0px;
+      } 
+
+      canvas {
+        display: block;
+      }   
+    </style>
+    <script src="https://github.com/processing/p5.js/releases/download/v1.9.0/p5.min.js"></script>
+    <script>  
+      let coords = []
+      let life = 2000;
+      let base = 10;
+
+      function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+      }
+
+      function setup() {
+        createCanvas(windowWidth, windowHeight, WEBGL)
+      }
+
+      function draw() {
+        blendMode(BLEND);
+        background(0);
+        
+        blendMode(ADD);
+        if (mouseIsPressed) {
+          coords.push(createVector(mouseX - (width/2), mouseY - (height/2), millis()));
+        }
+        let time = millis();
+        
+        for (let i=0; i<coords.length; i++) {
+          let co = coords[i];
+          let pco;
+          if (i > 0) {
+            pco = coords[i-1];
+          }
+          
+          let timeDiff = (time - co.z) / (life / 100) ;
+          
+          if (time > co.z + life/4) {
+            stroke(255,100,100,127 - timeDiff);
+            fill(0,100,255,127 - timeDiff);
+            strokeWeight(base);
+            if (i > 0) {
+              line(co.x, co.y, pco.x, pco.y);
+            }
+            circle(co.x, co.y, base + timeDiff);
+          } else {
+            stroke(255);
+            fill(200,200,255,200);
+            strokeWeight(1);
+            if (i > 0) {
+              line(co.x, co.y, pco.x, pco.y);
+            }
+          }
+
+          if (i > 0) {
+            stroke(255 - timeDiff);
+            strokeWeight(1);
+            line(co.x + random(-base, base), co.y + random(-base, base), pco.x + random(-base, base), pco.y + random(-base, base));
+          }
+          if (time < co.z + life/4) {
+            stroke(255 - timeDiff);
+            strokeWeight(1);
+            circle(co.x, co.y, base);
+          }
+          if (time > co.z + life) {
+            coords.splice(i, 1);
+          }
+        }
+      }
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
