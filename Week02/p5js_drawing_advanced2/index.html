@@ -17,6 +17,7 @@
       let coords = []
       let life = 2000;
       let base = 10;
+      let repsVal = 40;
 
       function windowResized() {
         resizeCanvas(windowWidth, windowHeight);
@@ -26,13 +27,27 @@
         createCanvas(windowWidth, windowHeight, WEBGL);
       }
 
+      function addCoords(co) {
+        if (coords.length > 0) {
+          let pco = coords[coords.length-1];
+          let distVal = co.dist(pco);
+          let reps = int(distVal / repsVal);
+          console.log(distVal + ", " + reps);
+          for (let i=0; i<reps; i++) {
+            coords.push(p5.Vector.lerp(co, pco, (1.0 / reps) * i));
+          }
+        }
+
+        coords.push(co);
+      }
+
       function draw() {
         blendMode(BLEND);
         background(0);
         
         blendMode(ADD);
         if (mouseIsPressed) {
-          coords.push(createVector(mouseX - (width/2), mouseY - (height/2), millis()));
+          addCoords(createVector(mouseX - (width/2), mouseY - (height/2), millis()));
         }
         let time = millis();
         
