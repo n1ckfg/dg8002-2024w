@@ -5,7 +5,12 @@
       html, body {
         overscroll-behavior: none;
         touch-action: none;
+        margin: 0px;
       }    
+
+      canvas {
+        display: block;
+      } 
     </style>
     <script src="https://github.com/processing/p5.js/releases/download/v1.9.0/p5.min.js"></script>
     <script>  
@@ -15,12 +20,16 @@
       let strokes = [];
       let armDelete = false;
 
+      function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+      }
+
       function setup() {
-        createCanvas(400, 400);
+        createCanvas(windowWidth, windowHeight, WEBGL);
         bgColor = color(127);
       }
       
-      function draw() {          
+      function draw() {              
         background(bgColor);
 
         if (armDelete) {
@@ -30,10 +39,15 @@
         }
 
         if (mouseIsPressed && isDrawing && strokes.length > 0) {
-          let distVal = dist(mouseX, mouseY, pmouseX, pmouseY);
+          let x = mouseX - (width/2);
+          let y = mouseY - (height/2);
+          let px = pmouseX - (width/2);
+          let py = pmouseY - (height/2);
+          
+          let distVal = dist(x, y, px, py);
           //console.log(distVal);
           let mapVal = map(distVal, 0, 40, 5, 15);
-          strokes[strokes.length-1].points.push(createVector(mouseX, mouseY, mapVal));
+          strokes[strokes.length-1].points.push(createVector(x, y, mapVal));
         }
 
         for (let i=0; i<strokes.length; i++) {
