@@ -18,8 +18,12 @@ void ofApp::draw(){
     
     for (int i=0; i<ofGetWidth(); i += step) {
         for (int j=0; j<ofGetHeight(); j += step) {
+            ofVec2f p1(i, j);
+            ofVec2f p2(mouseX, mouseY);
+            float d = p1.distance(p2) / 100.0;
+            
             ofSetColor(0, 127, 0, 20);
-            ofDrawCircle(i, j, step*2, step*2);
+            ofDrawCircle(i, j, step*d, step*d);
 
             ofSetColor(227, 100, 0, 127);
             ofDrawCircle(i, j, step, step);
